@@ -11,7 +11,9 @@ defmodule ScaffoldHelper do
   """
   @spec create_folder(String.t, String.t) :: {:ok, String.t} | {:auth_failure, String.t} | {:error, String.t}
   def create_folder(name, token) do
+     IO.puts "calling create folder....."
     case HTTPoison.post!("https://api.box.com/v2.0/folders", Poison.encode!(%{name: "Pet Partners", parent: %{id: 0}}), %{Authentication: "Bearer #{token}"}) do
+     
       %{body: body, status_code: 201} ->
         folder_id = body
                     |> Poison.decode!

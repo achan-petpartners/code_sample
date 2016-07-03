@@ -57,7 +57,10 @@ defmodule CodeSample.Authentication do
               "&client_secret=" <> Application.get_env(:sand_box, :box_api_secret) <>
               "&assertion=" <> assertion
 
+    #1IO.puts request
+
     case HTTPoison.post!("https://api.box.com/oauth2/token", request) do
+     #case true do
       %{status_code: 200, body: body} ->
         token = body
                 |> Poison.decode!

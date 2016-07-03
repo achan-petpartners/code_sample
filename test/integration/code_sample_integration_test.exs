@@ -33,7 +33,7 @@ defmodule CodeSampleIntegrationTest do
   end
 
   test "A fresh file has no comments", context do
-    assert CodeSample.get_comments!(context[:file_id], CodeSample.Authentication.get_token) == []
+    assert CodeSample.get_comments!(context[:file_id], CodeSample.Authentication.get_token) == nil
   end
 
   test "Getting comments from a non-existant file raises an exception", context do
@@ -42,9 +42,16 @@ defmodule CodeSampleIntegrationTest do
     end
   end
 
-  test "We can add a comment to a file"
+  test "We can add a comment to a file", context do
+    
+    assert Map.get(CodeSample.add_comment!(context[:file_id], CodeSample.Authentication.get_token, "test comment"), "message") == "test comment"
+  end
 
-  test "We can delete a comment from a file"
+  test "We can delete a comment from a file", context do
+    assert CodeSample.delete_comment!(context[:file_id], CodeSample.Authentication.get_token) == 204  
+  end
 
-  test "We can modify a comment on a file"
+  test "We can modify a comment on a file", context do
+    assert CodeSample.modify_comment!(context[:file_id], CodeSample.Authentication.get_token, "Modified a comment of a file.") == "Modified a comment of a file."
+  end
 end

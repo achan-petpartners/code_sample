@@ -24,7 +24,7 @@ defmodule AuthenticationIntegrationTest do
     CodeSample.Authentication.start_link(2500) # Expire after 2.5 seconds
     old_token = CodeSample.Authentication.get_token
     :timer.sleep(100)
-
+    
     assert CodeSample.Authentication.get_token == old_token
   end
 end

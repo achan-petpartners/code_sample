@@ -23,12 +23,7 @@ defmodule CodeSample do
     end
   end
 
-  def delete_comment!(file_id, token) do
-    response = add_comment!(file_id, token, "for delete")
-    comment_id = Map.get(response, "id")
-    IO.puts "should get printed #{comment_id}"
-    #case get_comments!(response, token) do
-    #  %{status_code: 201, body: body} -> IO.puts body
+  def delete_comment!(comment_id, token) do
     case HTTPoison.delete! "https://api.box.com/2.0/comments/#{comment_id}", %{Authorization: "Bearer #{token}"}, [] do
       %{status_code: 204} ->
        204
@@ -37,12 +32,7 @@ defmodule CodeSample do
     end
   end
 
-   def modify_comment!(file_id, token, comment) do
-    response = add_comment!(file_id, token, "for modify")
-    comment_id = Map.get(response, "id")
-    IO.puts "should get printed #{comment_id}"
-    #case get_comments!(response, token) do
-    #  %{status_code: 201, body: body} -> IO.puts body
+   def modify_comment!(comment_id, token, comment) do
     case HTTPoison.put! "https://api.box.com/2.0/comments/#{comment_id}", Poison.encode!(%{message: "#{comment}"}), %{Authorization: "Bearer #{token}"}, [] do
       %{status_code: 200, body: body} ->
         body 

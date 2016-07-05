@@ -36,22 +36,46 @@ defmodule CodeSampleIntegrationTest do
     assert CodeSample.get_comments!(context[:file_id], CodeSample.Authentication.get_token) == nil
   end
 
-  test "Getting comments from a non-existant file raises an exception", context do
+  test "Getting comments from a non-existant file raises an exception" do
     assert_raise RuntimeError, fn ->
       CodeSample.get_comments!("1234", CodeSample.Authentication.get_token)
     end
   end
 
-  test "We can add a comment to a file", context do
-    
+
+  test "adding a comment to a non-existant file raises an exception", context do
+    assert_raise RuntimeError, fn ->
+      CodeSample.add_comment!("1234", CodeSample.Authentication.get_token, "add comment")
+    end
     assert Map.get(CodeSample.add_comment!(context[:file_id], CodeSample.Authentication.get_token, "test comment"), "message") == "test comment"
   end
 
+  test "We can add a comment to a file", context do
+    assert Map.get(CodeSample.add_comment!(context[:file_id], CodeSample.Authentication.get_token, "test comment"), "message") == "test comment"
+  end
+
+
+  test "Deleting a non-existant comment raises an exception" do
+    assert_raise RuntimeError, fn ->
+      CodeSample.delete_comment!("1234", CodeSample.Authentication.get_token)
+    end
+  end
+
   test "We can delete a comment from a file", context do
-    assert CodeSample.delete_comment!(context[:file_id], CodeSample.Authentication.get_token) == 204  
+    response = CodeSample.add_comment!(context[:file_id], CodeSample.Authentication.get_token, "for delete")
+    comment_id = Map.get(response, "id")
+    assert CodeSample.delete_comment!(comment_id, CodeSample.Authentication.get_token) == 204  
+  end
+
+  test "Modifying a comment from a non-existant file raises an exception" do
+    assert_raise RuntimeError, fn ->
+      CodeSample.modify_comment!("1234", CodeSample.Authentication.get_token, "Modified a comment of a file.")
+    end
   end
 
   test "We can modify a comment on a file", context do
-    assert CodeSample.modify_comment!(context[:file_id], CodeSample.Authentication.get_token, "Modified a comment of a file.") == "Modified a comment of a file."
+    response = CodeSample.add_comment!(context[:file_id], CodeSample.Authentication.get_token, "for modify")
+    comment_id = Map.get(response, "id")
+    assert CodeSample.modify_comment!(comment_id, CodeSample.Authentication.get_token, "Modified a comment of a file.") == "Modified a comment of a file."
   end
 end

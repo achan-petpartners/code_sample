@@ -22,7 +22,7 @@ defmodule CodeSample.Authentication do
     # Refresh tokan after `cycle` milliseconds.  Should be less than 3621000
     :timer.send_interval(cycle, :refresh_key)
     :ets.new(:box_auth_table, [:named_table])
-
+    
     update_token()
     {:ok, nil}
   end
@@ -45,7 +45,6 @@ defmodule CodeSample.Authentication do
 
   @doc """
   This method should never be called by the end user, unless start_link has been called AND get_token fails.
-
   While it will not harm the system to call update_token normally, it is a lot of unnecessary communication with the BOX API.
   """
   def update_token() do
@@ -56,11 +55,7 @@ defmodule CodeSample.Authentication do
               "&client_id=" <> Application.get_env(:sand_box, :box_api_key) <>
               "&client_secret=" <> Application.get_env(:sand_box, :box_api_secret) <>
               "&assertion=" <> assertion
-
-    #1IO.puts request
-
     case HTTPoison.post!("https://api.box.com/oauth2/token", request) do
-     #case true do
       %{status_code: 200, body: body} ->
         token = body
                 |> Poison.decode!
